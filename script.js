@@ -71,9 +71,13 @@ async function sendMessage() {
   
   const typingIndicator = addMessage('', 'typing');
   
+  const url = 'https://server-iblp.vercel.app/proxy';
+  
+  console.log('🔵 שולח ל:', url);
+  console.log('🔵 הודעה:', text);
+  
   try {
-    // שליחה לשרת Vercel שלך
-    const response = await fetch('https://server-iblp-git-main-tamar-ils-projects.vercel.app/proxy', {
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json'
@@ -81,20 +85,27 @@ async function sendMessage() {
       body: JSON.stringify({ message: text })
     });
     
+    console.log('🟢 סטטוס:', response.status);
+    console.log('🟢 תקין?', response.ok);
+    
     if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      const errorText = await response.text();
+      console.error('🔴 שגיאה:', errorText);
+      throw new Error('HTTP ' + response.status + ': ' + errorText);
     }
     
     const data = await response.json();
+    console.log('🟢 נתונים:', data);
+    
     typingIndicator.remove();
     
     // הצגת התשובה
     addMessage(data.reply || data.message || 'קיבלתי את ההודעה', 'bot');
     
   } catch (err) {
-    console.error('Error:', err);
+    console.error('🔴 שגיאה מלאה:', err);
     typingIndicator.remove();
-    addMessage('שגיאה בחיבור לשרת: ' + err.message, 'bot');
+    addMessage('שגיאה: ' + err.message, 'bot');
   }
 }
 
