@@ -1,3 +1,4 @@
+// אלמנטים
 const openChatBtn = document.getElementById('openChat');
 const chatWindow = document.getElementById('chatWindow');
 const closeBtn = document.getElementById('closeChat');
@@ -36,7 +37,6 @@ function addMessage(text, type) {
   const messageDiv = document.createElement('div');
   messageDiv.className = `message ${type}`;
   
-  // יצירת אווטר בלי תמונות חיצוניות
   const avatar = document.createElement('div');
   avatar.className = 'avatar';
   avatar.style.cssText = `
@@ -88,12 +88,16 @@ async function sendMessage() {
   
   const typingIndicator = addMessage('', 'typing');
   
-  const url = 'https://server-pi-one-14.vercel.app/proxy';
+  const url = 'https://server-iblp.vercel.app/proxy';
   
-  console.log('🔵 שולח ל:', url);
-  console.log('🔵 הודעה:', text);
+  console.log('========== START REQUEST ==========');
+  console.log('🔵 URL:', url);
+  console.log('🔵 Message:', text);
+  console.log('🔵 Time:', new Date().toLocaleTimeString());
   
   try {
+    console.log('📤 Sending fetch request...');
+    
     const response = await fetch(url, {
       method: 'POST',
       headers: { 
@@ -102,25 +106,51 @@ async function sendMessage() {
       body: JSON.stringify({ message: text })
     });
     
-    console.log('🟢 סטטוס:', response.status);
-    console.log('🟢 תקין?', response.ok);
+    console.log('📥 Response received!');
+    console.log('🟢 Status:', response.status);
+    console.log('🟢 Status Text:', response.statusText);
+    console.log('🟢 OK?:', response.ok);
+    console.log('🟢 Headers:', [...response.headers.entries()]);
     
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('🔴 שגיאה מהשרת:', errorText);
-      throw new Error('HTTP ' + response.status + ': ' + errorText);
+      let errorText;
+      try {
+        errorText = await response.text();
+      } catch (e) {
+        errorText = 'Could not read error response';
+      }
+      console.error('🔴 Error Response Text:', errorText);
+      console.error('🔴 Full Response:', response);
+      throw new Error(`Server returned ${response.status}: ${errorText}`);
     }
     
-    const data = await response.json();
-    console.log('🟢 נתונים שהתקבלו:', data);
+    let data;
+    try {
+      const responseText = await response.text();
+      console.log('📄 Raw Response:', responseText);
+      data = JSON.parse(responseText);
+      console.log('✅ Parsed Data:', data);
+    } catch (e) {
+      console.error('🔴 Failed to parse JSON:', e);
+      throw new Error('Invalid JSON response from server');
+    }
     
     typingIndicator.remove();
     
-    // הצגת התשובה
-    addMessage(data.reply || data.message || 'קיבלתי את ההודעה!', 'bot');
+    const replyText = data.reply || data.message || 'קיבלתי את ההודעה!';
+    console.log('💬 Reply:', replyText);
+    addMessage(replyText, 'bot');
+    
+    console.log('========== END REQUEST (SUCCESS) ==========');
     
   } catch (err) {
-    console.error('🔴 שגיאה מלאה:', err);
+    console.error('========== ERROR CAUGHT ==========');
+    console.error('🔴 Error Type:', err.name);
+    console.error('🔴 Error Message:', err.message);
+    console.error('🔴 Error Stack:', err.stack);
+    console.error('🔴 Full Error Object:', err);
+    console.error('========== END REQUEST (FAILED) ==========');
+    
     typingIndicator.remove();
     addMessage('שגיאה: ' + err.message, 'bot');
   }
