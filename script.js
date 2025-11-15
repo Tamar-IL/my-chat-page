@@ -49,7 +49,7 @@ async function sendMessage() {
   const typingIndicator = addMessage('', 'typing');
 
   try {
-const response = await fetch('http://localhost:3000/proxy', {
+const response = await fetch('https://server-pi-one-14.vercel.app/', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ message: text })
