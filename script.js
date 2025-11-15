@@ -88,7 +88,7 @@ async function sendMessage() {
   
   const typingIndicator = addMessage('', 'typing');
   
-  const url = 'https://server-iblp.vercel.app/proxy';
+  const url = 'https://server-pi-one-14.vercel.app/proxy';
   
   console.log('🔵 שולח ל:', url);
   console.log('🔵 הודעה:', text);
