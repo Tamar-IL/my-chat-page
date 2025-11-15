@@ -49,10 +49,10 @@ async function sendMessage() {
   const typingIndicator = addMessage('', 'typing');
 
   try {
-    const response = await fetch('https://example.com/api/chat', { // הכנס כאן את ה-URL שלך
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text })
+const response = await fetch('http://localhost:3000/proxy', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ message: text })
     });
 
     const data = await response.json();
