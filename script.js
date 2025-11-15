@@ -1,43 +1,3 @@
-const openChat = document.getElementById('openChat');
-const closeChat = document.getElementById('closeChat');
-const minimizeBtn = document.getElementById('minimizeChat');
-const expandBtn = document.getElementById('expandChat');
-const chatWindow = document.getElementById('chatWindow');
-const chatMessages = document.getElementById('chatMessages');
-const userInput = document.getElementById('userInput');
-const sendBtn = document.getElementById('sendBtn');
-
-// פתיחה וסגירה
-openChat.addEventListener('click', () => chatWindow.classList.add('show'));
-closeChat.addEventListener('click', () => chatWindow.classList.remove('show'));
-
-// הקטנה/הסתרה
-minimizeBtn.addEventListener('click', () => chatMessages.classList.toggle('minimized'));
-
-// הרחבה
-expandBtn.addEventListener('click', () => chatWindow.classList.toggle('expanded'));
-
-// פונקציה להוספת הודעה
-function addMessage(text, sender) {
-  const msgDiv = document.createElement('div');
-  msgDiv.classList.add('message', sender);
-
-  if (sender === 'typing') {
-    msgDiv.classList.add('bot');
-    msgDiv.innerHTML = `<div class="avatar"><img src="bot.png" /></div><div class="text"><span></span><span></span><span></span></div>`;
-  } else {
-    msgDiv.innerHTML = `
-      <div class="avatar"><img src="${sender === 'user' ? 'user.png' : 'bot.png'}" /></div>
-      <div class="text">${text}</div>
-    `;
-  }
-
-  chatMessages.appendChild(msgDiv);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-  return msgDiv;
-}
-
-// שליחת הודעה ל-API
 async function sendMessage() {
   const text = userInput.value.trim();
   if (!text) return;
@@ -45,25 +5,20 @@ async function sendMessage() {
   addMessage(text, 'user');
   userInput.value = '';
 
-  // הצגת "כותב..."
   const typingIndicator = addMessage('', 'typing');
 
   try {
-fetch("https://hook.eu2.make.com/mnlmqnrelehv5i7bdba7sj7m5oe7art4", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ test: "hello" })
-})
-.then(res => res.json())
-.then(console.log)
-.catch(console.error);
+    // שליחת הבקשה לשרת פרוקסי
+    const response = await fetch(
+      "https://server-5bck57zvr-tamar-ils-projects.vercel.app/proxy",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }) // שולחים את הטקסט של המשתמש
+      }
+    );
 
-
-
-    const data = await response.json();
-
+    const data = await response.json(); // עכשיו response מוגדר
     typingIndicator.remove();
     addMessage(data.reply || 'אין תשובה', 'bot');
 
@@ -73,9 +28,3 @@ fetch("https://hook.eu2.make.com/mnlmqnrelehv5i7bdba7sj7m5oe7art4", {
     console.error(err);
   }
 }
-
-// אירועי לחיצה ואנטר
-sendBtn.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendMessage();
-});
