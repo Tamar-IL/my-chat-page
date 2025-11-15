@@ -88,7 +88,7 @@ async function sendMessage() {
   
   const typingIndicator = addMessage('', 'typing');
   
-  const url = 'https://server-iblp.vercel.app/proxy';
+  const url = 'https://chat-vercel-proxy.vercel.app/proxy';
   
   console.log('========== START REQUEST ==========');
   console.log('🔵 URL:', url);
