@@ -1,4 +1,3 @@
-// אלמנטים
 const openChatBtn = document.getElementById('openChat');
 const chatWindow = document.getElementById('chatWindow');
 const closeBtn = document.getElementById('closeChat');
@@ -37,11 +36,29 @@ function addMessage(text, type) {
   const messageDiv = document.createElement('div');
   messageDiv.className = `message ${type}`;
   
-  const avatar = document.createElement('img');
+  // יצירת אווטר בלי תמונות חיצוניות
+  const avatar = document.createElement('div');
   avatar.className = 'avatar';
-  avatar.src = type === 'user' 
-    ? 'https://via.placeholder.com/32/4fc3f7/ffffff?text=U'
-    : 'https://via.placeholder.com/32/90dffe/ffffff?text=B';
+  avatar.style.cssText = `
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 14px;
+    flex-shrink: 0;
+  `;
+  
+  if (type === 'user') {
+    avatar.style.background = 'linear-gradient(135deg, #4fc3f7, #29b6f6)';
+    avatar.textContent = 'U';
+  } else {
+    avatar.style.background = 'linear-gradient(135deg, #90dffe, #6ce5e5)';
+    avatar.textContent = 'B';
+  }
   
   const textDiv = document.createElement('div');
   textDiv.className = 'text';
@@ -71,7 +88,7 @@ async function sendMessage() {
   
   const typingIndicator = addMessage('', 'typing');
   
-  const url = 'https://server-git-main-tamar-ils-projects.vercel.app/proxy';
+  const url = 'https://server-iblp.vercel.app/proxy';
   
   console.log('🔵 שולח ל:', url);
   console.log('🔵 הודעה:', text);
@@ -90,17 +107,17 @@ async function sendMessage() {
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('🔴 שגיאה:', errorText);
+      console.error('🔴 שגיאה מהשרת:', errorText);
       throw new Error('HTTP ' + response.status + ': ' + errorText);
     }
     
     const data = await response.json();
-    console.log('🟢 נתונים:', data);
+    console.log('🟢 נתונים שהתקבלו:', data);
     
     typingIndicator.remove();
     
     // הצגת התשובה
-    addMessage(data.reply || data.message || 'קיבלתי את ההודעה', 'bot');
+    addMessage(data.reply || data.message || 'קיבלתי את ההודעה!', 'bot');
     
   } catch (err) {
     console.error('🔴 שגיאה מלאה:', err);
