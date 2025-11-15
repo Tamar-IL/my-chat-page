@@ -88,7 +88,7 @@ async function sendMessage() {
   
   const typingIndicator = addMessage('', 'typing');
   
-  const url = 'https://chat-vercel-proxy.vercel.app/proxy';
+  const url = 'https://chat-vercel-proxy-qnk0ig57y-tamar-ils-projects.vercel.app/proxy';
   
   console.log('========== START REQUEST ==========');
   console.log('🔵 URL:', url);
