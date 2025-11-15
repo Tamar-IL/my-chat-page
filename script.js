@@ -73,7 +73,7 @@ async function sendMessage() {
   
   try {
     // שליחה לשרת Vercel שלך
-    const response = await fetch('https://server-5bck57zvr-tamar-ils-projects.vercel.app/proxy', {
+    const response = await fetch('https:/server-iblp.vercel.app/proxy', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json'
