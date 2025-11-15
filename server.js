@@ -8,7 +8,7 @@ app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
-    const response = await fetch('https://ffp.tactiq.io/proxy', { // URL של Tactiq
+    const response = await fetch('https://server-5bck57zvr-tamar-ils-projects.vercel.app/proxy', { // URL של Tactiq
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ app.post('/proxy', async (req, res) => {
     res.json(data);
 
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch from Tactiq', details: err.message });
+    res.status(500).json({ error: 'Failed to fetch from VRCLE', details: err.message });
   }
 });
 
